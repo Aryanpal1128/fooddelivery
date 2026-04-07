@@ -52,14 +52,14 @@ function Nav() {
             onClick={() => setInfo(!info)}
             className="w-9 h-9 rounded-full bg-orange-500 text-white flex justify-center items-center font-semibold cursor-pointer hover:scale-105 transition-transform"
           >
-            {userData.fullname.charAt(0).toUpperCase()}
+            {userData?.fullname ? userData.fullname.charAt(0).toUpperCase() : "U"}
           </div>
         )}
 
         {/* Dropdown */}
         {info && (
           <div className="absolute right-0 top-12 bg-white shadow-md rounded-xl py-3 px-4 border border-gray-100 w-44 animate-fadeIn">
-            <p className="font-semibold text-gray-700 mb-2">{userData.fullname}</p>
+            <p className="font-semibold text-gray-700 mb-2">{userData?.fullname || userData?.email || "User"}</p>
             <button
               onClick={() => navigate("/orders")}
               className="block w-full text-left text-gray-600 hover:text-orange-500 hover:bg-orange-50 rounded-md px-2 py-1 transition"

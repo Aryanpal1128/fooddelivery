@@ -112,15 +112,19 @@ const googleauth = async ()=>{
   </label>
 
   <div className="flex justify-between gap-3">
-    {["User", "Owner", "Delivery Boy"].map((r) => (
+    {[
+      { label: "User", value: "user" },
+      { label: "Owner", value: "Owner" },
+      { label: "Delivery Boy", value: "deliveryboy" }
+    ].map((r) => (
       <button
-        key={r}
+        key={r.value}
         type="button"
         className="flex-1 bg-gray-100 text-gray-700 font-medium py-2 rounded-lg border cursor-pointer border-gray-300 hover:bg-sky-100 hover:text-sky-700 transition-all duration-200 shadow-sm hover:scale-[1.02]"
-        onClick={()=>setrole(r)} style={role==r?{backgroundColor:'skyblue',color:'white'}:{border:'white',color:'blue',}
-      }
+        onClick={() => setrole(r.value)}
+        style={role === r.value ? { backgroundColor: 'skyblue', color: 'white' } : { border: 'white', color: 'blue' }}
       >
-        {r}
+        {r.label}
       </button>
     ))}
   </div>
@@ -195,23 +199,24 @@ const googleauth = async ()=>{
             <button type='button' className='absolute right-3 top-12 cursor-pointer text-gray-500 hover:text-sky-600 ' onClick={()=>setpassword(prev=>!prev)}>{!showpassword? <IoEye />:<FaEyeSlash /> }</button>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white py-3 rounded-xl font-semibold shadow-md hover:from-sky-600 hover:to-blue-700 transform hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
+            disabled={Loading}
+            className={`w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white py-3 rounded-xl font-semibold shadow-md hover:from-sky-600 hover:to-blue-700 transform hover:-translate-y-0.5 transition-all duration-300 cursor-pointer ${Loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             onClick={(e) => {
               e.preventDefault();
-              handlesignup(); disabled={Loading}
-             
+              handlesignup();
             }}
-
-
           >
             {Loading ? <ClipLoader size={20} color='white' /> : "Signup"}
            
           </button>
             
-           {Err && < p className=''>*{Err}</p> } 
+          {Err && (
+            <div className="bg-red-50 text-red-500 p-3 rounded-xl mb-4 text-sm text-center border border-red-200">
+              {typeof Err === 'string' ? Err : Err.message || "An error occurred"}
+            </div>
+          )}
 
 
           {/* signin with google */}

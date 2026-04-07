@@ -78,7 +78,11 @@ const googleauth = async ()=>{
           Fill out the form to continue 🍔
         </h3>
 
-    
+        {Err && (
+          <div className="bg-red-50 text-red-500 p-3 rounded-xl mb-4 text-sm text-center border border-red-200">
+            {typeof Err === 'string' ? Err : Err.message || "An error occurred"}
+          </div>
+        )}
 
         <form className="space-y-6">
           {/* Email */}
@@ -124,14 +128,12 @@ const googleauth = async ()=>{
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white py-3 rounded-xl font-semibold shadow-md hover:from-sky-600 hover:to-blue-700 transform hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
+            disabled={Loading}
+            className={`w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white py-3 rounded-xl font-semibold shadow-md hover:from-sky-600 hover:to-blue-700 transform hover:-translate-y-0.5 transition-all duration-300 cursor-pointer ${Loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             onClick={(e) => {
               e.preventDefault();
-              handlesignin(); disabled={Loading}
-            
+              handlesignin();
             }}
-
-
           >
            {Loading ? <ClipLoader size={20} /> : "Signin"}
           </button>

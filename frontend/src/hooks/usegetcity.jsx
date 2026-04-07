@@ -19,10 +19,10 @@ const usegetcity = () => {
             const res = await axios.get(`https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&format=json&apiKey=${import.meta.env.VITE_GEOAPIKEY}`)
          
             
-            dispatch({ type: setCity, payload: res.data.results[0].city })
-            dispatch({ type: setState, payload: res.data.results[0].state });
+            dispatch(setCity(res.data?.results?.[0]?.city || ""));
+            dispatch(setState(res.data?.results?.[0]?.state || ""));
 
-            const fullAddress = `${res.data.results[0].address_line1 || ''}, ${res.data.results[0].address_line2 || ''}`;
+            const fullAddress = `${res.data?.results?.[0]?.address_line1 || ''}, ${res.data?.results?.[0]?.address_line2 || ''}`;
             dispatch(setcaddress(fullAddress));
             dispatch(setaddress(fullAddress ))
 

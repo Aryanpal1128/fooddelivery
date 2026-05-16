@@ -88,9 +88,13 @@ removeFromCart: (state, action) => {
   state.cartitem = state.cartitem.filter(i => i._id !== id);
 },
 
+  clearCart: (state) => {
+    state.cartitem = [];
+    state.totalamount = 0;
+  },
 
-  }
+  },
 });
 
-export const { setUserData, clearUserData,setCity,setState ,setcaddress, setshopinmycity, setiteminmycity,setrating,addtocart,updateCartQuantity,removeFromCart} = userSlice.actions;
+export const { setUserData, clearUserData, setCity, setState, setcaddress, setshopinmycity, setiteminmycity, setrating, addtocart, updateCartQuantity, removeFromCart, clearCart } = userSlice.actions;
 export default userSlice.reducer;

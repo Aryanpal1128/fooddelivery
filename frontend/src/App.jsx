@@ -15,6 +15,7 @@ import usegetmyshop from "./hooks/usegetmyshop";
 import usegetshopbycity from "./hooks/Usegetshopbycity";
 import usegetitembycity from "./hooks/usegetitembycity";
 import Checkout from "./pages/Checkout";
+import MyOrders from "./pages/MyOrders";
 
 export const serverurl = "http://localhost:5000";
 
@@ -39,6 +40,7 @@ function App() {
       <Route path="/getitem/:itemId" element={userData ? <Edititem /> : <Navigate to="/signin" />} />
       <Route path="/cart" element={userData ? <Cartpage /> : <Navigate to="/signin" />} />
       <Route path="/checkout" element={userData ? <Checkout /> : <Navigate to="/signin" />} />
+      <Route path="/orders" element={userData ? <MyOrders /> : <Navigate to="/signin" />} />
     </Routes>
   );
 }

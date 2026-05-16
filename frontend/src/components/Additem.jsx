@@ -1,75 +1,51 @@
 import React, { useState } from "react";
-import { IoIosArrowBack } from "react-icons/io";
+import { IoChevronBack } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { serverurl } from "../App";
 import { useDispatch, useSelector } from "react-redux";
 import { setshopData } from "../redux/ownerslice";
+import { MdAdd, MdOutlineRestaurant } from "react-icons/md";
 
 function Additem() {
   const navigate = useNavigate();
   const { shopData } = useSelector((state) => state.owner);
- const dispatch = useDispatch();
-  
+  const dispatch = useDispatch();
+
   const [itemName, setItemName] = useState("");
   const [price, setPrice] = useState("");
- 
   const [category, setCategory] = useState("");
   const [foodType, setFoodType] = useState("");
-
-  const categories = [
-    "Snacks",
-    "Fruits",
-    "Dairy",
-    "Indian",
-    "Pizza",
-    "Burger",
-    "Chinese",
-    "Desserts",
-  ];
-
   const [image, setImage] = useState("");
   const [backendImage, setBackendImage] = useState("");
   const [loading, setLoading] = useState(false);
 
- 
+  const categories = ["Snacks","Fruits","Dairy","Indian","Pizza","Burger","Chinese","Desserts"];
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setBackendImage(file);
     setImage(URL.createObjectURL(file));
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!itemName || !price  || !category || !foodType) {
+    if (!itemName || !price || !category || !foodType) {
       alert("Please fill all fields before submitting!");
       return;
     }
-
     try {
       setLoading(true);
-
       const formData = new FormData();
       formData.append("name", itemName);
       formData.append("price", price);
-      
       formData.append("category", category);
       formData.append("foodtype", foodType);
       formData.append("image", backendImage);
-
-      const response = await axios.post(`${serverurl}/api/item/additem`,
-        formData,
-        { withCredentials: true }
-      );
+      await axios.post(`${serverurl}/api/item/additem`, formData, { withCredentials: true });
       const shopRes = await axios.get(`${serverurl}/api/shop/getmyshop`, { withCredentials: true });
-dispatch(setshopData(shopRes.data));
-
-      
-      alert("Item added successfully!");
+      dispatch(setshopData(shopRes.data));
       navigate(-1);
-      setLoading(false)
     } catch (error) {
       console.error("Error adding item:", error);
       alert("Error adding item. Try again.");
@@ -78,137 +54,121 @@ dispatch(setshopData(shopRes.data));
     }
   };
 
+  const inputStyle = {
+    background: "#1e1e1e", border: "1px solid #2a2a2a", color: "#fff",
+    outline: "none", width: "100%", padding: "12px 16px", borderRadius: "12px", fontSize: "14px",
+  };
+  const labelStyle = { color: "#9ca3af", fontSize: "13px", fontWeight: 500, display: "block", marginBottom: "8px" };
+
   return (
-    <div className="w-full min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-orange-100 via-yellow-50 to-pink-100 p-6">
-      {/* Back Button */}
-      <div
-        onClick={() => navigate(-1)}
-        className="self-start flex items-center gap-1 text-gray-600 hover:text-orange-500 cursor-pointer mb-4"
-      >
-        <IoIosArrowBack size={22} />
-        <span className="text-sm font-medium">Back</span>
+    <div className="min-h-screen" style={{ background: "#111111" }}>
+      {/* Header */}
+      <div className="sticky top-0 z-40 flex items-center gap-3 px-5 py-4"
+        style={{ background: "#161616", borderBottom: "1px solid #2a2a2a" }}>
+        <button onClick={() => navigate(-1)}
+          className="flex items-center justify-center rounded-xl"
+          style={{ background: "#1e1e1e", border: "1px solid #2a2a2a", width: "36px", height: "36px", color: "#9ca3af" }}>
+          <IoChevronBack style={{ fontSize: "18px" }} />
+        </button>
+        <div>
+          <h1 style={{ color: "#fff", fontWeight: 700, fontSize: "18px" }}>Add New Item</h1>
+          <p style={{ color: "#6b7280", fontSize: "12px" }}>Add to {shopData?.name || "your menu"}</p>
+        </div>
       </div>
 
-      {/* Main Form Card */}
-      <div className="bg-white/90 backdrop-blur-md shadow-2xl rounded-3xl p-8 w-full max-w-lg">
-        <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-          🍔 Add New Item
-        </h2>
-
+      <div className="max-w-lg mx-auto px-4 py-6">
         {shopData ? (
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+
             {/* Item Name */}
             <div>
-              <label className="text-gray-700 font-semibold mb-1 block">
-                Item Name
-              </label>
-              <input
-                type="text"
-                placeholder="Enter item name"
-                value={itemName}
-                onChange={(e) => setItemName(e.target.value)}
-                className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all duration-200"
-              />
+              <label style={labelStyle}>Item Name</label>
+              <input type="text" placeholder="e.g. Margherita Pizza" value={itemName}
+                onChange={(e) => setItemName(e.target.value)} style={inputStyle}
+                onFocus={e => e.target.style.borderColor = "#f97316"}
+                onBlur={e => e.target.style.borderColor = "#2a2a2a"} />
             </div>
 
             {/* Price */}
             <div>
-              <label className="text-gray-700 font-semibold mb-1 block">
-                Price (₹)
-              </label>
-              <input
-                type="number"
-                placeholder="Enter price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all duration-200"
-              />
+              <label style={labelStyle}>Price (₹)</label>
+              <input type="number" placeholder="e.g. 249" value={price}
+                onChange={(e) => setPrice(e.target.value)} style={inputStyle}
+                onFocus={e => e.target.style.borderColor = "#f97316"}
+                onBlur={e => e.target.style.borderColor = "#2a2a2a"} />
             </div>
 
             {/* Category */}
             <div>
-              <label className="text-gray-700 font-semibold mb-1 block">
-                Category
-              </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full border border-gray-300 rounded-xl px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all duration-200"
-              >
+              <label style={labelStyle}>Category</label>
+              <select value={category} onChange={(e) => setCategory(e.target.value)}
+                style={{ ...inputStyle, cursor: "pointer" }}>
                 <option value="">Select category</option>
-                {categories.map((cat, index) => (
-                  <option key={index} value={cat}>
-                    {cat}
-                  </option>
+                {categories.map((cat, i) => (
+                  <option key={i} value={cat} style={{ background: "#1e1e1e" }}>{cat}</option>
                 ))}
               </select>
             </div>
 
             {/* Food Type */}
             <div>
-              <label className="text-gray-700 font-semibold mb-2 block">
-                Food Type
-              </label>
-              <div className="flex gap-6">
-                <label className="flex items-center gap-2 text-gray-700">
-                  <input
-                    type="radio"
-                    name="foodtype"
-                    value="Veg"
-                    checked={foodType === "Veg"}
-                    onChange={(e) => setFoodType(e.target.value)}
-                    className="accent-green-600"
-                  />
-                  Veg 🌱
-                </label>
-                <label className="flex items-center gap-2 text-gray-700">
-                  <input
-                    type="radio"
-                    name="foodtype"
-                    value="Non-Veg"
-                    checked={foodType === "Non-Veg"}
-                    onChange={(e) => setFoodType(e.target.value)}
-                    className="accent-red-600"
-                  />
-                  Non-Veg 🍗
-                </label>
+              <label style={labelStyle}>Food Type</label>
+              <div className="flex gap-3">
+                {[{ label: "🌱 Veg", value: "Veg", color: "#22c55e" }, { label: "🍗 Non-Veg", value: "Non-Veg", color: "#ef4444" }].map(opt => (
+                  <button key={opt.value} type="button" onClick={() => setFoodType(opt.value)}
+                    className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200"
+                    style={foodType === opt.value
+                      ? { background: opt.value === "Veg" ? "rgba(34,197,94,0.15)" : "rgba(239,68,68,0.15)", border: `1.5px solid ${opt.color}`, color: opt.color }
+                      : { background: "#1e1e1e", border: "1px solid #2a2a2a", color: "#9ca3af" }}>
+                    {opt.label}
+                  </button>
+                ))}
               </div>
             </div>
 
-           
-
             {/* Image Upload */}
             <div>
-              <label className="text-gray-700 font-semibold mb-1 block">
-                Item Image
-              </label>
-              <input
-                type="file"
-                onChange={handleImageChange}
-                className="w-full border border-gray-300 rounded-xl px-3 py-2 cursor-pointer text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-orange-100 file:text-orange-700 hover:file:bg-orange-200"
-              />
+              <label style={labelStyle}>Item Image</label>
+              <div
+                className="rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 hover:opacity-90"
+                style={{ border: "2px dashed #2a2a2a", background: "#1a1a1a" }}
+              >
+                {image ? (
+                  <img src={image} alt="preview" className="w-full object-cover" style={{ height: "180px" }} />
+                ) : (
+                  <label htmlFor="item-image" className="flex flex-col items-center justify-center gap-2 py-10 cursor-pointer">
+                    <MdOutlineRestaurant style={{ fontSize: "36px", color: "#2a2a2a" }} />
+                    <span style={{ color: "#6b7280", fontSize: "13px" }}>Click to upload image</span>
+                  </label>
+                )}
+                <input id="item-image" type="file" onChange={handleImageChange} className="hidden" />
+              </div>
               {image && (
-                <img
-                  src={image}
-                  alt="preview"
-                  className="w-full h-48 object-cover rounded-lg mt-3 border"
-                />
+                <label htmlFor="item-image" style={{ color: "#f97316", fontSize: "12px", cursor: "pointer", display: "block", marginTop: "6px" }}>
+                  Change image
+                </label>
               )}
             </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-orange-400 to-pink-500 text-white font-semibold py-3 rounded-xl shadow-md hover:from-orange-500 hover:to-pink-600 transform hover:-translate-y-0.5 transition-all duration-300"
-            >
-              {loading ? "Adding..." : "Add Item"}
+            {/* Submit */}
+            <button type="submit" disabled={loading}
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 hover:opacity-90 mt-2"
+              style={{ background: "#f97316", color: "#fff", opacity: loading ? 0.7 : 1 }}>
+              <MdAdd size={18} />
+              {loading ? "Adding…" : "Add Item"}
             </button>
           </form>
         ) : (
-          <p className="text-gray-600 text-center">
-            Please create your shop before adding items.
-          </p>
+          <div className="flex flex-col items-center justify-center gap-4 py-16 text-center rounded-2xl"
+            style={{ background: "#1a1a1a", border: "1px solid #2a2a2a" }}>
+            <span style={{ fontSize: "40px" }}>🏪</span>
+            <p style={{ color: "#9ca3af", fontSize: "14px" }}>Please create your shop before adding items.</p>
+            <button onClick={() => navigate("/createeditshop")}
+              className="px-6 py-2.5 rounded-xl font-semibold text-sm"
+              style={{ background: "#f97316", color: "#fff" }}>
+              Create Shop
+            </button>
+          </div>
         )}
       </div>
     </div>

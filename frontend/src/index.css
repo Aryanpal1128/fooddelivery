@@ -1,1 +1,100 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.2s ease, border-color 0.3s ease;
+}
+
+:root {
+  --bg-primary: #0f0e0c;
+  --bg-surface: #1a1a1a;
+  --bg-card: #141210;
+  --bg-input: #1c1a17;
+  --border-color: #1e1c19;
+  --orange: #e8650a;
+  --orange-hover: #cf5807;
+  --text-primary: #f0ece6;
+  --text-secondary: #ccc;
+  --text-muted: #555555;
+  --green: #22c55e;
+  --red: #ef4444;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+.max-w-1280 {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+@media (min-width: 768px) {
+  .max-w-1280 {
+    padding: 0 48px;
+  }
+}
+
+.section-gap {
+  margin-top: 32px;
+  margin-bottom: 8px;
+}
+
+.heading-gap {
+  margin-bottom: 16px;
+}
+
+/* Scrollbar hide utility */
+.scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+/* Thin orange scrollbar for sidebar */
+.scrollbar-orange::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-orange::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-orange::-webkit-scrollbar-thumb {
+  background: var(--orange);
+  border-radius: 2px;
+}
+
+/* Smooth focus ring */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  ring: none;
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { transform: translateX(-50%) translateY(80px); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0);  opacity: 1; }
+}
+@keyframes pulse-orange {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(249, 115, 22, 0); }
+}
+
+.animate-fadeInUp { animation: fadeInUp 0.35s ease both; }
+.animate-slideUp  { animation: slideUp 0.3s ease-out both; }
+.animate-pulse-orange { animation: pulse-orange 2s ease infinite; }

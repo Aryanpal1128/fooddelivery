@@ -1,114 +1,104 @@
 import React, { useState } from "react";
 import { FaStar } from "react-icons/fa6";
-import { CiStar } from "react-icons/ci";
 import { FaPlus, FaMinus } from "react-icons/fa6";
-import { GiChickenOven } from "react-icons/gi";
-import { BiLeaf } from "react-icons/bi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { addtocart } from "../redux/userSlice";
+import { addtocart, updateCartQuantity } from "../redux/userSlice";
 
 function Itemcard({ data, index }) {
-  const [numb, setNumb] = useState(0);
   const dispatch = useDispatch();
-  const cartitem = useSelector(state=>state.user)
+  const { cartitem } = useSelector(state => state.user);
+  const cartEntry = cartitem?.find(item => item._id === data._id);
+  const quantity = cartEntry?.quantity || 0;
 
-  const renderStars = (rating) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      if (i <= Math.round(rating)) {
-        stars.push(<FaStar key={i} className="text-yellow-400" />);
-      } else {
-        stars.push(<CiStar key={i} className="text-gray-300" />);
-      }
-    }
-    return stars;
-  };
-
-  const handleAddToCart = () => {
-    if (numb > 0) {
-      dispatch(
-        addtocart({
-          _id: data._id,
-          name: data.name,
-          price: data.price,
-          image: data.image,
-          shop: data.shop,
-          quantity: numb,
-          foodtype: data.foodtype,
-        })
-      );
-      setNumb(0);
+  const handleIncrease = (e) => {
+    e?.stopPropagation();
+    if (quantity === 0) {
+      dispatch(addtocart({
+        _id: data._id,
+        name: data.name,
+        price: data.price,
+        image: data.image,
+        shop: data.shop,
+        quantity: 1,
+        foodtype: data.foodtype,
+      }));
     } else {
-      alert("Please add at least 1 item before adding to cart");
+      dispatch(updateCartQuantity({ _id: data._id, quantity: quantity + 1 }));
     }
   };
+
+  const handleDecrease = (e) => {
+    e?.stopPropagation();
+    dispatch(updateCartQuantity({ _id: data._id, quantity: quantity - 1 }));
+  };
+
+  const isInCart = quantity > 0;
 
   return (
     <div
       key={index}
-      className="w-[140px] h-[180px] md:w-[200px] md:h-[230px] flex flex-col rounded-2xl border-2 border-orange-400 bg-white shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden cursor-pointer"
+      className={`flex flex-col rounded-[14px] overflow-hidden bg-white dark:bg-[#141210] transition-colors border ${isInCart ? "border-[1.5px] border-[#e8650a]" : "border border-[#e5ddd5] dark:border-[#1e1c19]"}`}
     >
-      {/*  Image Section */}
-      <div className="relative w-full h-[70%] overflow-hidden">
+      {/* Image Section */}
+      <div className="relative w-full overflow-hidden shrink-0 h-[160px] bg-[#f0ece6] dark:bg-[#1c1a17] transition-colors">
         <img
           src={data.image}
           alt={data.name}
           className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
         />
-
-        {/* Food Type Indicator (Veg / Non-Veg) */}
-        <div className="absolute top-2 right-2 text-lg text-white bg-black/40 rounded-full p-1">
-          {data.foodtype === "Veg" ? (
-            <BiLeaf className="text-green-500" />
-          ) : (
-            <GiChickenOven className="text-red-500" />
-          )}
-        </div>
+        {/* Veg/non-veg dot */}
+        <span
+          className="absolute top-2 left-2 w-2 h-2 rounded-sm flex items-center justify-center bg-white dark:bg-[#141210] transition-colors"
+          style={{ border: `1px solid ${data.foodtype === "Veg" ? "#22c55e" : "#ef4444"}` }}
+        >
+          <span className="w-1 h-1 rounded-full" style={{ background: data.foodtype === "Veg" ? "#22c55e" : "#ef4444" }} />
+        </span>
       </div>
 
-      {/* 🧾 Info Section */}
-      <div className="flex flex-col justify-between px-3 py-2 text-sm h-[30%] bg-white">
-        <h3 className="font-semibold text-gray-800 truncate">{data.name}</h3>
+      {/* Info Section */}
+      <div className="flex flex-col gap-1 p-[12px_14px] flex-1 justify-between">
+        <div>
+          <h3 className="font-medium text-[13px] leading-[1.3] whitespace-nowrap overflow-hidden text-ellipsis text-[#1a1a1a] dark:text-[#ddd] transition-colors mb-[6px]">
+            {data.name}
+          </h3>
 
-        <div className="flex items-center gap-1 text-[12px]">
-          {renderStars(data.rating?.average || 0)}
-          <span className="ml-1 text-gray-500">
-            ({data.rating?.count || 0})
-          </span>
+          <div className="flex items-center justify-between mb-[10px]">
+            <span className="font-medium text-[14px] text-[#e8650a] dark:text-[#e8650a] transition-colors">₹{data.price}</span>
+            <span className="text-[11px] text-[#666] dark:text-[#666] transition-colors">
+              ★ {data.rating?.average ? data.rating.average.toFixed(1) : "4.5"}
+            </span>
+          </div>
         </div>
 
-        <div className="flex items-center justify-between mt-1">
-          <span className="text-orange-600 font-semibold text-sm">
-            ₹{data.price}
-          </span>
-
-          {/* Quantity Controls */}
-          <div className="flex items-center gap-2">
+        {/* Add to cart button */}
+        <div className="mt-auto transition-all duration-200 ease-in-out h-[36px]">
+          {quantity > 0 ? (
+            <div className="w-full h-[36px] bg-[#e8650a] rounded-[8px] flex items-center justify-between px-[4px]">
+              <button
+                onClick={handleDecrease}
+                className="w-[28px] h-[28px] rounded-[6px] bg-white/20 border-none text-white text-[18px] cursor-pointer flex items-center justify-center transition-colors hover:bg-white/30"
+              >
+                <FaMinus style={{ fontSize: "14px" }} />
+              </button>
+              <span className="text-[15px] font-semibold text-white min-w-[24px] text-center">
+                {quantity}
+              </span>
+              <button
+                onClick={handleIncrease}
+                className="w-[28px] h-[28px] rounded-[6px] bg-white/20 border-none text-white text-[18px] cursor-pointer flex items-center justify-center transition-colors hover:bg-white/30"
+              >
+                <FaPlus style={{ fontSize: "14px" }} />
+              </button>
+            </div>
+          ) : (
             <button
-              onClick={() => setNumb((prev) => (prev > 0 ? prev - 1 : 0))}
-              className="bg-gray-100 hover:bg-gray-200 rounded-full p-1"
+              onClick={handleIncrease}
+              className="w-full h-[36px] bg-[#e8650a] rounded-[8px] flex items-center justify-center text-white text-[18px] cursor-pointer transition-colors hover:bg-[#cf5807]"
             >
-              <FaMinus className="text-gray-600 text-xs" />
+              <FaPlus style={{ fontSize: "18px" }} />
             </button>
-
-            <p className="min-w-[20px] text-center font-medium">{numb}</p>
-
-            <button
-              onClick={() => setNumb((prev) => prev + 1)}
-              className="bg-gray-100 hover:bg-gray-200 rounded-full p-1"
-            >
-              <FaPlus className="text-gray-600 text-xs" />
-            </button>
-
-            {/* Add to Cart */}
-            <button
-              onClick={handleAddToCart}
-              className="bg-orange-500 hover:bg-orange-600 text-white p-1 rounded-full transition-all duration-300"
-            >
-              <AiOutlineShoppingCart className="text-lg" />
-            </button>
-          </div>
+          )}
         </div>
       </div>
     </div>

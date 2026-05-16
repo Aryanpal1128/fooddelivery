@@ -2,166 +2,262 @@ import React, { useState } from 'react';
 import { IoEye } from "react-icons/io5";
 import { FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { serverurl } from '../App';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '../firebase';
-import {ClipLoader} from "react-spinners"
+import { ClipLoader } from "react-spinners";
 import { useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
 
-const signin = () => {
-  const [showpassword,setpassword]=useState(false);
-  const [role,setrole]= useState("user");
+const Signin = () => {
+  const [showpassword, setpassword] = useState(false);
   const navigate = useNavigate();
-   const[Err,setErr]=useState("")
-  const[email,setemail]=useState("") 
-  const[password,setpass]=useState("")
-   const[Loading,setLoading]=useState(false )
-   const dispatch = useDispatch();
-const handlesignin= async ()=>{
-try {
-  setLoading(true);
-   const result =  await axios.post(`${serverurl}/api/auth/signin`, {
-   email, password
-}, {
-  withCredentials: true  
-})
-   dispatch(setUserData(result.data))
-   console.log(result)
-   setErr("")
-   setLoading(false);
-} catch (error) {
-  setLoading(false);
-  if ( error.response) {
-    console.log("Server Error:", error.response.data);
-    setErr(error.response.data || "Something went wrong");
-  } else {
-    console.error("Client Error:", error.message);
-    setErr(error.message);
-  }
-}
-}
-const googleauth = async ()=>{
-  try {
+  const [Err, setErr] = useState("");
+  const [email, setemail] = useState("");
+  const [password, setpass] = useState("");
+  const [Loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
-  
+  const handlesignin = async () => {
+    try {
+      setLoading(true);
+      const result = await axios.post(`${serverurl}/api/auth/signin`, { email, password }, { withCredentials: true });
+      dispatch(setUserData(result.data));
+      setErr("");
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      if (error.response) {
+        setErr(error.response.data || "Something went wrong");
+      } else {
+        setErr(error.message);
+      }
+    }
+  };
 
-    const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth,provider);
-    const response = await axios.post(`${serverurl}/api/auth/google`, {
-      email: result.user.email,
-    }, {
-      withCredentials: true  
-    })  
-
-    dispatch(setUserData(response.data));
-    console.log(response.data)
-  } catch (error) {
-     console.error("Google Auth Error:", error);
-  if (error.response) setErr(error.response.data);
-  else setErr(error.message);
-  }
-  
-}
-
+  const googleauth = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const response = await axios.post(`${serverurl}/api/auth/google`, { email: result.user.email }, { withCredentials: true });
+      dispatch(setUserData(response.data));
+    } catch (error) {
+      if (error.response) setErr(error.response.data);
+      else setErr(error.message);
+    }
+  };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-orange-100 via-pink-100 to-yellow-100 p-6 ">
-      <div className="bg-white/90 backdrop-blur-md shadow-2xl rounded-3xl p-10 w-full max-w-md transition-transform transform hover:scale-[1.02] ">
-        {/* Title */}
-        <h1 className="text-4xl font-extrabold text-sky-700 mb-3 text-center tracking-tight">
-          FoodApp
-        </h1>
-        <h3 className="text-gray-600 mb-8 text-center text-sm">
-          Fill out the form to continue 🍔
-        </h3>
+    <div className="min-h-screen w-full grid grid-cols-1 md:grid-cols-2 overflow-hidden" style={{ minHeight: '100vh' }}>
+      
+      {/* ── LEFT BRANDING PANEL ── */}
+      <div 
+        className="hidden md:flex flex-col justify-center items-center p-[60px_48px] relative transition-colors"
+        style={{ 
+          background: '#1a1208', 
+          flexDirection: 'column', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          padding: '60px 48px' 
+        }}
+      >
+        <div className="flex flex-col items-center">
+          <i className="ti ti-tools-kitchen-2" style={{ fontSize: '56px', color: '#e8650a' }}></i>
+          <h1 style={{ fontSize: '42px', fontWeight: '600', color: '#f0ece6', marginTop: '16px' }}>Foodie</h1>
+          <p style={{ fontSize: '15px', color: '#666', marginTop: '8px', textAlign: 'center' }}>
+            Your favourite food, delivered fast
+          </p>
+        </div>
 
-        {Err && (
-          <div className="bg-red-50 text-red-500 p-3 rounded-xl mb-4 text-sm text-center border border-red-200">
-            {typeof Err === 'string' ? Err : Err.message || "An error occurred"}
+        {/* Features */}
+        <div className="mt-8">
+          {[
+            { icon: "ti ti-clock", text: "Delivered in 20 minutes" },
+            { icon: "ti ti-star", text: "50+ top rated restaurants" },
+            { icon: "ti ti-shield", text: "Safe & secure payments" }
+          ].map((item, idx) => (
+            <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '14px', marginTop: '28px' }}>
+              <div style={{ 
+                width: '44px', height: '44px', borderRadius: '50%', background: '#2a1a08', 
+                border: '0.5px solid #3a2810', display: 'flex', alignItems: 'center', 
+                justifyContent: 'center' 
+              }}>
+                <i className={`${item.icon}`} style={{ color: '#e8650a', fontSize: '20px' }}></i>
+              </div>
+              <span style={{ fontSize: '14px', color: '#777' }}>{item.text}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── RIGHT FORM PANEL ── */}
+      <div 
+        className="bg-[#f5f0eb] dark:bg-[#0f0e0c] transition-colors"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+          padding: '40px 24px'
+        }}
+      >
+        <div style={{ width: '100%', maxWidth: '400px' }}>
+          
+          <h2 className="text-[#1a1a1a] dark:text-[#f0ece6]" style={{ fontSize: '32px', fontWeight: '600', marginBottom: '8px' }}>
+            Welcome back
+          </h2>
+          <p style={{ fontSize: '14px', color: '#666', marginBottom: '36px' }}>
+            Sign in to your Foodie account
+          </p>
+
+          {/* Error Message */}
+          {Err && (
+            <div className="mb-6 p-3 rounded-[10px] bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 text-red-500 text-[13px]">
+              {typeof Err === 'string' ? Err : "Authentication failed."}
+            </div>
+          )}
+
+          <form onSubmit={(e) => { e.preventDefault(); handlesignin(); }}>
+            
+            {/* Email */}
+            <div className="mb-4">
+              <label style={{ fontSize: '13px', color: '#aaa', marginBottom: '8px', display: 'block' }}>
+                Email Address
+              </label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setemail(e.target.value)}
+                placeholder="Enter your email"
+                className="bg-white dark:bg-[#1c1a17] text-[#1a1a1a] dark:text-[#f0ece6] transition-colors"
+                style={{
+                  width: '100%',
+                  height: '50px',
+                  border: '0.5px solid #2a2825',
+                  borderRadius: '10px',
+                  padding: '0 16px',
+                  fontSize: '14px',
+                  outline: 'none',
+                  marginBottom: '20px',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+
+            {/* Password Row */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <label style={{ fontSize: '13px', color: '#aaa', display: 'block' }}>
+                Password
+              </label>
+              <span 
+                onClick={() => navigate('/forgotpassword')}
+                style={{ fontSize: '13px', color: '#e8650a', cursor: 'pointer' }}
+              >
+                Forgot password?
+              </span>
+            </div>
+
+            <div className="relative mb-[20px]">
+              <input
+                type={showpassword ? "text" : "password"}
+                required
+                value={password}
+                onChange={(e) => setpass(e.target.value)}
+                placeholder="Enter your password"
+                className="bg-white dark:bg-[#1c1a17] text-[#1a1a1a] dark:text-[#f0ece6] transition-colors"
+                style={{
+                  width: '100%',
+                  height: '50px',
+                  border: '0.5px solid #2a2825',
+                  borderRadius: '10px',
+                  padding: '0 16px',
+                  fontSize: '14px',
+                  outline: 'none',
+                  boxSizing: 'border-box'
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setpassword(!showpassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#555] hover:text-[#e8650a] transition-colors"
+              >
+                {showpassword ? <FaEyeSlash size={18} /> : <IoEye size={18} />}
+              </button>
+            </div>
+
+            {/* Sign In Button */}
+            <button
+              type="submit"
+              disabled={Loading}
+              style={{
+                width: '100%',
+                height: '50px',
+                background: '#e8650a',
+                border: 'none',
+                borderRadius: '10px',
+                color: 'white',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                marginTop: '8px',
+                marginBottom: '20px'
+              }}
+            >
+              {Loading ? <ClipLoader size={20} color="white" /> : "Sign In"}
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '4px 0 16px' }}>
+            <div style={{ flex: 1, height: '0.5px', background: '#1e1c19' }}></div>
+            <span style={{ fontSize: '13px', color: '#444' }}>or</span>
+            <div style={{ flex: 1, height: '0.5px', background: '#1e1c19' }}></div>
           </div>
-        )}
 
-        <form className="space-y-6">
-          {/* Email */}
-          <div>
-            <label htmlFor="email" className="block text-gray-700 font-semibold mb-2 mr-74">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-               onChange={(e)=>setemail(e.target.value)}
-              value={email} required
-              className="w-full px-4 py-2.5 border text-gray-700 border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200"
-            />
-          </div>
-
-        
-
-          {/* Password */}
-          <div className='relative'>
-            <label htmlFor="password" className="block text-gray-700 font-semibold mb-2 mr-65">
-               Password
-            </label>
-            <input
-              id="password"
-              type={`${showpassword?"text":"password"}`}
-               onChange={(e)=>setpass(e.target.value)}
-              value={password}
-              required
-              placeholder="Enter your password"
-              className="w-full px-4 py-2.5 border text-gray-700 border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200 "
-              
-            />
-            <button type='button' className='absolute right-3 top-12 cursor-pointer text-gray-500 hover:text-sky-600 ' onClick={()=>setpassword(prev=>!prev)}>{!showpassword? <IoEye />:<FaEyeSlash /> }</button>
-          </div>
-
-
-          <div className=' ' onClick={()=>navigate('/forgotpassword')}>
-            Forgot password
-          </div>
-
-          {/* Submit Button */}
+          {/* Google Button */}
           <button
-            type="submit"
-            disabled={Loading}
-            className={`w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white py-3 rounded-xl font-semibold shadow-md hover:from-sky-600 hover:to-blue-700 transform hover:-translate-y-0.5 transition-all duration-300 cursor-pointer ${Loading ? 'opacity-70 cursor-not-allowed' : ''}`}
-            onClick={(e) => {
-              e.preventDefault();
-              handlesignin();
+            onClick={googleauth}
+            style={{
+              width: '100%',
+              height: '50px',
+              background: '#1c1a17',
+              border: '0.5px solid #2a2825',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              fontSize: '14px',
+              fontWeight: '500',
+              color: '#ddd',
+              cursor: 'pointer',
+              marginBottom: '24px'
             }}
           >
-           {Loading ? <ClipLoader size={20} /> : "Signin"}
+            <FcGoogle size={20} />
+            Sign in with Google
           </button>
 
-          {/* signin with google */}
-          <button
-  type="button"
-  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-sky-500 to-blue-600 text-white py-3 rounded-xl font-semibold shadow-md hover:from-sky-600 hover:to-blue-700 transform hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
-  onClick={googleauth}
->
-  <FcGoogle size={22} />
-  <span>Sign in with Google</span>
-</button>
+          {/* Footer */}
+          <div style={{ textAlign: 'center', fontSize: '14px', color: '#555', marginTop: '8px' }}>
+            Don't have an account?{" "}
+            <span 
+              onClick={() => navigate("/signup")}
+              style={{ color: '#e8650a', fontWeight: '500', cursor: 'pointer' }}
+            >
+              Sign up
+            </span>
+          </div>
 
-
-{/* do not have an account */}
-<p className="text-center text-gray-600 text-sm mt-4" onClick={()=>navigate("/signup")}>
-   create new account?{" "}
-  <span className="text-sky-600 font-semibold cursor-pointer hover:underline hover:text-sky-700 transition-colors duration-200">
-    signup
-  </span>
-</p>
-
-
-        </form>
+        </div>
       </div>
+
     </div>
   );
 };
 
-export default signin;
+export default Signin;

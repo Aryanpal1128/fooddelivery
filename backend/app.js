@@ -23,7 +23,7 @@ const port = process.env.PORT || 5000;
 // cors ka kaam 
 app.use(
     cors({
-        origin: 'http://localhost:5173',
+        origin: process.env.FRONTEND_URL || 'http://localhost:5173',
         methods: ['GET', 'POST', 'DELETE', 'PUT'],
 
         allowedHeaders: [
@@ -57,4 +57,6 @@ app.use("/api/order", orderrouter)
 
 
 
-app.listen(port)
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});

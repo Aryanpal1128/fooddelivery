@@ -1,3 +1,4 @@
+import './api.js'; // Import global Axios defaults and interceptors first
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'

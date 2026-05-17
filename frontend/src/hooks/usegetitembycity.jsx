@@ -8,29 +8,25 @@ import { setiteminmycity} from "../redux/userSlice.js";
 
 const usegetitembycity = () => {
   const dispatch = useDispatch();
-  const {city}= useSelector(state=>state.user)
+  const { city } = useSelector(state => state.user);
+  const activeCity = city && city !== "null" && city !== "undefined" && city.trim() !== "" ? city : "Delhi";
 
   useEffect(() => {
     const fetchshop = async () => {
       try {
-        const res = await axios.get(`${serverurl}/api/item/getitembycity/${city}`, {
+        const res = await axios.get(`${serverurl}/api/item/getitembycity/${activeCity}`, {
           withCredentials: true,
         });
-
-     
-
-       
-          dispatch(setiteminmycity(res.data));
-          console.log("items by city",res.data)
-       
+        dispatch(setiteminmycity(res.data));
+        console.log("items by city", res.data);
       } catch (error) {
         console.error(" Error fetching shop:", error.message);
-        dispatch(setiteminmycity(null));
+        dispatch(setiteminmycity([]));
       }
     };
 
     fetchshop();
-  }, [city]);
+  }, [activeCity]);
 };
 
 export default usegetitembycity;

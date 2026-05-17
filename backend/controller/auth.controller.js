@@ -43,7 +43,7 @@ console.log(usermodel)
       httpOnly: true,
     });
 
-    res.status(201).json({ message: "Signup success", user });
+    res.status(201).json({ message: "Signup success", user, token });
 
   } catch (error) {
     console.error(error);
@@ -82,7 +82,7 @@ export const signin = async (req, res) => {
       httpOnly: true,
     });
 
-    res.status(200).json({ message: "Login success", user: exuser });
+    res.status(200).json({ message: "Login success", user: exuser, token });
 
   } catch (error) {
     console.error(error);

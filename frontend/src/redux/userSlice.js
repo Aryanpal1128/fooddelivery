@@ -17,8 +17,16 @@ const userSlice = createSlice({
   reducers: {
     setUserData: (state, action) => {
       state.userData = action.payload.user;
-      state.token = action.payload.token;
-      
+      if (action.payload.token) {
+        state.token = action.payload.token;
+        localStorage.setItem('token', action.payload.token);
+      } else {
+        // Retrieve token from localStorage if present
+        const savedToken = localStorage.getItem('token');
+        if (savedToken) {
+          state.token = savedToken;
+        }
+      }
     },
     setCity: (state, action) => {
       state.city = action.payload;
@@ -66,7 +74,8 @@ const userSlice = createSlice({
     clearUserData: (state) => {
       state.userData = null;
       state.token = null;
-       state.city = null;
+      state.city = null;
+      localStorage.removeItem('token');
     },
    updateCartQuantity: (state, action) => {
   

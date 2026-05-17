@@ -17,7 +17,7 @@ import usegetitembycity from "./hooks/usegetitembycity";
 import Checkout from "./pages/Checkout";
 import MyOrders from "./pages/MyOrders";
 
-export const serverurl = import.meta.env.VITE_API_URL;
+export const serverurl = import.meta.env.VITE_API_URL || "https://fooddelivery-qhnw.onrender.com";
 
 function App() {
   const { userData } = useSelector((state) => state.user);

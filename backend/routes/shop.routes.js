@@ -9,7 +9,7 @@ shoprouter.post("/createedit", isauth, upload.single("image"), createShop);
 
 
 shoprouter.get("/getmyshop",isauth,getmyShop)
-shoprouter.get("/getbycity/:city",isauth,getshopbycity)
+shoprouter.get("/getbycity/:city",getshopbycity)
 
 
 export default shoprouter

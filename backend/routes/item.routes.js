@@ -9,7 +9,7 @@ const itemrouter = express.Router();
 itemrouter.post("/additem",isauth,upload.single("image"),itemcontrol)
 itemrouter.get("/getitem/:itemId",isauth,getitembyid)
 itemrouter.get("/deleteitem/:itemId",isauth,deleteitem)
-itemrouter.get("/getitembycity/:city",isauth,getitembycity)
+itemrouter.get("/getitembycity/:city",getitembycity)
 itemrouter.post("/edititem/:itemId",isauth,upload.single("image"),edititem)
 
 

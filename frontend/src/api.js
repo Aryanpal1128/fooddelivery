@@ -53,8 +53,11 @@ axios.interceptors.response.use(
       localStorage.removeItem('token');
       store.dispatch(clearUserData());
       
-      // Redirect to signin if not already there
-      if (!window.location.pathname.includes('/signin') && !window.location.pathname.includes('/signup')) {
+      // Redirect to signin if not already on a public path
+      const publicPaths = ['/', '/signin', '/signup', '/forgotpassword'];
+      const isPublicPath = publicPaths.includes(window.location.pathname);
+      
+      if (!isPublicPath) {
         window.location.href = '/signin';
       }
     }

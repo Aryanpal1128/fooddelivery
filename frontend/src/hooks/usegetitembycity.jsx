@@ -20,7 +20,7 @@ const usegetitembycity = () => {
         dispatch(setiteminmycity(res.data));
         console.log("items by city", res.data);
       } catch (error) {
-        console.error(" Error fetching shop:", error.message);
+        console.error(" Error fetching items detailed:", error.response?.data?.message || error.message);
         dispatch(setiteminmycity([]));
       }
     };

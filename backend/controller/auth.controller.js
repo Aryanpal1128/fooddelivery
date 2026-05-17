@@ -1,5 +1,5 @@
 import usermodel from "../models/usermodel.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import generateToken from "../utils/generatetoken.js";
 import { sendotp } from "../utils/mail.js";
 

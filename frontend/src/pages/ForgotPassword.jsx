@@ -6,7 +6,7 @@ import { ClipLoader } from "react-spinners";
 import { MdOutlineRestaurant } from "react-icons/md";
 import { IoChevronBack } from "react-icons/io5";
 
-const Forgotpassword = () => {
+const ForgotPassword = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
@@ -216,4 +216,4 @@ const Forgotpassword = () => {
   );
 };
 
-export default Forgotpassword;
+export default ForgotPassword;

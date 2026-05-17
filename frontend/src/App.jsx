@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Signin from "./pages/signin";
-import Forgotpassword from "./pages/Forgotpassword";
+import ForgotPassword from "./pages/ForgotPassword";
 import Create from "./pages/create";
 import Home from "./pages/home";
 import Createeditshop from "./components/Createeditshop";
@@ -32,7 +32,7 @@ function App() {
     <Routes>
       <Route path="/signup" element={!userData ? <Create /> : <Navigate to="/" />} />
       <Route path="/signin" element={!userData ? <Signin /> : <Navigate to="/" />} />
-      <Route path="/forgotpassword" element={!userData ? <Forgotpassword /> : <Navigate to="/" />} />
+      <Route path="/forgotpassword" element={!userData ? <ForgotPassword /> : <Navigate to="/" />} />
       <Route path="/" element={userData ? <Home /> : <Navigate to="/signin" />} />
       <Route path="/createeditshop" element={userData ? <Createeditshop /> : <Navigate to="/signin" />} />
       <Route path="/additem" element={userData ? <Additem /> : <Navigate to="/signin" />} />

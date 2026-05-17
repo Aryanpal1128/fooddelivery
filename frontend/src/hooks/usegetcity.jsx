@@ -16,13 +16,14 @@ const usegetcity = () => {
             const longitude = position.coords.longitude;
            dispatch(setlocation({lat:latitude,lon:longitude}))
 
-            const res = await axios.get(`https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&format=json&apiKey=${import.meta.env.VITE_GEOAPIKEY}`)
+            const response = await fetch(`https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&format=json&apiKey=${import.meta.env.VITE_GEOAPIKEY}`);
+            const data = await response.json();
          
             
-            dispatch(setCity(res.data?.results?.[0]?.city || ""));
-            dispatch(setState(res.data?.results?.[0]?.state || ""));
+            dispatch(setCity(data?.results?.[0]?.city || ""));
+            dispatch(setState(data?.results?.[0]?.state || ""));
 
-            const fullAddress = `${res.data?.results?.[0]?.address_line1 || ''}, ${res.data?.results?.[0]?.address_line2 || ''}`;
+            const fullAddress = `${data?.results?.[0]?.address_line1 || ''}, ${data?.results?.[0]?.address_line2 || ''}`;
             dispatch(setcaddress(fullAddress));
             dispatch(setaddress(fullAddress ))
 

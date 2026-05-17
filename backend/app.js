@@ -12,7 +12,7 @@ import itemrouter from "./routes/item.routes.js";
 import orderrouter from "./routes/order.routes.js";
 
 
-mongoose.connect(process.env.MONGO_URL)
+mongoose.connect(process.env.MONGO_URL || "mongodb://localhost:27017/fooddelivery")
     .then(() => { console.log("mongo connected") }).catch((err) => console.log(err))
 
 

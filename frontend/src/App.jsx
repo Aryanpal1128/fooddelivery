@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Signin from "./pages/signin";
-import Forgotpassword from "./pages/forgotpassword";
+import Forgotpassword from "./pages/Forgotpassword";
 import Create from "./pages/create";
 import Home from "./pages/home";
 import Createeditshop from "./components/Createeditshop";
@@ -17,7 +17,7 @@ import usegetitembycity from "./hooks/usegetitembycity";
 import Checkout from "./pages/Checkout";
 import MyOrders from "./pages/MyOrders";
 
-export const serverurl = "http://localhost:5000";
+export const serverurl = import.meta.env.VITE_API_URL;
 
 function App() {
   const { userData } = useSelector((state) => state.user);

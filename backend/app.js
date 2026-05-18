@@ -54,6 +54,10 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/', (req, res) => {
+  res.json({ message: 'Foodie API is running!' });
+});
+
 app.use("/api/auth", authrouter);
 app.use("/api/user", userrouter);
 app.use("/api/shop", shoprouter);

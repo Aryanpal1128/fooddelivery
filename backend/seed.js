@@ -4,7 +4,7 @@ import usermodel from "./models/usermodel.js";
 import Shop from "./models/shop.model.js";
 import Item from "./models/item.model.js";
 
-await mongoose.connect(process.env.MONGO_URL);
+await mongoose.connect(process.env.MONGO_URI);
 console.log("Connected to MongoDB");
 
 // Delete old seeded data

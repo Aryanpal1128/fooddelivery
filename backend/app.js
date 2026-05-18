@@ -79,11 +79,19 @@ async function startServer() {
     try {
         // 1. Verify Render Environment Variables load correctly
         console.log("🔍 Verifying Environment Variables:");
-        console.log("- MONGO_URL:", process.env.MONGO_URL ? "✅ Loaded" : "❌ Missing");
+        console.log("- MONGO_URI:", process.env.MONGO_URI ? "✅ Loaded" : "❌ Missing");
         console.log("- JWT_KEY:", process.env.JWT_KEY ? "✅ Loaded" : "❌ Missing");
         console.log("- PORT:", process.env.PORT ? "✅ Loaded" : "⚠️ Missing (using default 5000)");
 
-        const mongoURI = process.env.MONGO_URL || "mongodb://localhost:27017/fooddelivery";
+        const mongoURI = process.env.MONGO_URI;
+        if (!mongoURI) {
+            console.error("❌ Critical Error: process.env.MONGO_URI is undefined!");
+            process.exit(1);
+        }
+
+        // Mask MongoDB password in connection log for security
+        const maskedURI = mongoURI.replace(/:([^:@]+)@/, ":******@");
+        console.log(`📡 MongoDB URI exists safely: ${maskedURI}`);
         
         // 2. Fully await database connection
         console.log("⏳ Connecting to MongoDB...");

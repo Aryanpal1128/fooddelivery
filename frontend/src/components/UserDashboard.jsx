@@ -8,7 +8,7 @@ import Itemcard from './Itemcard.jsx';
 import { CiSearch } from "react-icons/ci";
 import { MdOutlineTune } from "react-icons/md";
 import { FaPlus, FaMinus } from "react-icons/fa6";
-import { addtocart, updateCartQuantity } from '../redux/userSlice';
+import { addtocart, updateCartQuantity, setCity } from '../redux/userSlice';
 
 const GREETING = () => {
   const h = new Date().getHours();
@@ -29,6 +29,7 @@ function UserDashboard() {
 
   const { city, shopinmycity, iteminmycity, cartitem, totalamount, userData } = useSelector(state => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const greeting = GREETING();
   const firstName = userData?.fullname?.split(" ")[0] || "there";
@@ -186,7 +187,7 @@ function UserDashboard() {
         </section>
 
         {/* ── BEST SHOPS ── */}
-        {shopinmycity?.length > 0 && (
+        {shopinmycity?.length > 0 ? (
           <>
             <section id="restaurants" className="section-gap mt-[32px]">
               <div className="flex items-center justify-between">
@@ -201,6 +202,30 @@ function UserDashboard() {
               </div>
             </section>
           </>
+        ) : (
+          <div className="flex flex-col items-center justify-center gap-6 py-16 text-center rounded-[20px] bg-white dark:bg-[#141210] border border-[#e5ddd5] dark:border-[#1e1c19] px-6 my-8">
+            <span style={{ fontSize: "64px" }}>🏪</span>
+            <div>
+              <h3 className="font-semibold text-lg text-[#1a1a1a] dark:text-white mb-2">
+                No active restaurants found in "{city || "your location"}"
+              </h3>
+              <p className="text-sm text-[#666] dark:text-[#aaa] max-w-md mx-auto">
+                We haven't expanded to your location yet. Try exploring one of our fully-supported cities below to check out the food!
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
+              {["Greater Noida", "Delhi", "Noida"].map((popCity) => (
+                <button
+                  key={popCity}
+                  onClick={() => dispatch(setCity(popCity))}
+                  className="px-5 py-2.5 rounded-full text-xs font-semibold border border-[#e8650a] text-[#e8650a] transition-all hover:bg-[#e8650a] hover:text-white"
+                >
+                  📍 {popCity}
+                </button>
+              ))}
+            </div>
+          </div>
         )}
 
         {/* ── ALL FOOD ITEMS ── */}

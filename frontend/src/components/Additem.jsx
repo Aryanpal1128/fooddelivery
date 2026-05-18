@@ -43,8 +43,11 @@ function Additem() {
       formData.append("foodtype", foodType);
       formData.append("image", backendImage);
       await axios.post(`${serverurl}/api/item/additem`, formData, { withCredentials: true });
-      const shopRes = await axios.get(`${serverurl}/api/shop/getmyshop`, { withCredentials: true });
-      dispatch(setshopData(shopRes.data));
+      const token = localStorage.getItem('token');
+      if (token) {
+        const shopRes = await axios.get(`${serverurl}/api/shop/getmyshop`, { withCredentials: true });
+        dispatch(setshopData(shopRes.data));
+      }
       navigate(-1);
     } catch (error) {
       console.error("Error adding item:", error);

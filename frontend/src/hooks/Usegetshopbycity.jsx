@@ -9,7 +9,11 @@ import {setshopinmycity} from "../redux/userSlice.js";
 const usegetshopbycity = () => {
   const dispatch = useDispatch();
   const { city } = useSelector(state => state.user);
-  const activeCity = city && city !== "null" && city !== "undefined" && city.trim() !== "" ? city : "Delhi";
+  
+  // Normalize: Trim whitespace and default to Greater Noida
+  const activeCity = city && city !== "null" && city !== "undefined" && city.trim() !== "" 
+    ? city.trim() 
+    : "Greater Noida";
 
   useEffect(() => {
     const fetchshop = async () => {
@@ -18,15 +22,19 @@ const usegetshopbycity = () => {
           withCredentials: true,
         });
         dispatch(setshopinmycity(res.data));
-        console.log(res.data);
       } catch (error) {
-        console.error(" Error fetching shop detailed:", error.response?.data?.message || error.message);
-        dispatch(setshopinmycity([]));
+        if (error.response && error.response.status === 404) {
+          // Expected when a city has no shops
+          dispatch(setshopinmycity([]));
+        } else {
+          console.error("Error fetching shops by city:", error.response?.data?.message || error.message);
+          dispatch(setshopinmycity([]));
+        }
       }
     };
 
     fetchshop();
-  }, [activeCity]);
+  }, [activeCity, dispatch]);
 };
 
 export default usegetshopbycity;

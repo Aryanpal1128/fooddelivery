@@ -10,12 +10,15 @@ const usegetmyshop = () => {
 
   useEffect(() => {
     const fetchshop = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        dispatch(setshopData(null));
+        return;
+      }
       try {
         const res = await axios.get(`${serverurl}/api/shop/getmyshop`, {
           withCredentials: true,
         });
-
-     
 
         if (res.data) {
           dispatch(setshopData(res.data));
@@ -23,8 +26,12 @@ const usegetmyshop = () => {
           dispatch(setshopData(null));
         }
       } catch (error) {
-        console.error("Error fetching shop:", error.message);
-        dispatch(setshopData(null));
+        if (error.response && error.response.status === 401) {
+          dispatch(setshopData(null));
+        } else {
+          console.error("Error fetching shop:", error.message);
+          dispatch(setshopData(null));
+        }
       }
     };
 

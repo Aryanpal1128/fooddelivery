@@ -11,9 +11,20 @@ function Owneritemcard({ data }) {
   const dispatch = useDispatch();
 
   const handledeletekey = async () => {
-    await axios.get(`${serverurl}/api/item/deleteitem/${data._id}`, { withCredentials: true });
-    const shopRes = await axios.get(`${serverurl}/api/shop/getmyshop`, { withCredentials: true });
-    dispatch(setshopData(shopRes.data));
+    try {
+      await axios.get(`${serverurl}/api/item/deleteitem/${data._id}`, { withCredentials: true });
+      const token = localStorage.getItem('token');
+      if (token) {
+        const shopRes = await axios.get(`${serverurl}/api/shop/getmyshop`, { withCredentials: true });
+        dispatch(setshopData(shopRes.data));
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        dispatch(setshopData(null));
+      } else {
+        console.error("Error deleting item or fetching updated shop:", error);
+      }
+    }
   };
 
   return (

@@ -11,16 +11,20 @@ const usegetcurrentuser = () => {
  const dispatch= useDispatch();
   useEffect(() => {
     const fetchuser = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
       try {
         const res = await axios.get(`${serverurl}/api/user/current`, { withCredentials: true });
-      setUser(res.data.user) 
-      dispatch(setUserData(res.data))
-        console.log("current user", res)
-        
+        setUser(res.data.user);
+        dispatch(setUserData(res.data));
       } catch (error) {
-        console.error("Error fetching current user:", error);
+        if (error.response && error.response.status === 401) {
+          dispatch(setUserData({ user: null, token: null }));
+        } else {
+          console.error("Error fetching current user:", error);
+        }
       }
-    }
+    };
 
     fetchuser()
   }, [])
